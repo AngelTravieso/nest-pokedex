@@ -3,11 +3,15 @@ version: '3'
 
 services:
   db:
+    # version de mongo
     image: mongo:5
     restart: always
+    # puerto local:puerto del wsl
     ports:
       - 27017:27017
     environment:
+    # nombre de la BD (este es una ENV de MongoDB)
       MONGODB_DATABASE: nest-pokemon
+    # volumen (persistencia de dato)
     volumes:
       - ./mongo:/data/db
