@@ -33,3 +33,6 @@ lerna-debug.log*
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+# Evitar subir configuración de MongoDB (esto lo hace el docker solo)
+mongo
