@@ -15,6 +15,7 @@ export class PokemonService {
   ) {}
 
   async create(createPokemonDto: CreatePokemonDto) {
+
     createPokemonDto.name = createPokemonDto.name.toLocaleLowerCase();
 
     try {
@@ -24,17 +25,7 @@ export class PokemonService {
   
       return pokemon;
     } catch(err) {
-      
-      // Registro que coincide con este valor
-      if(err.code === 11000) {
-        // Cuando se lanza un throw el código no sigue ejecutandose, es como hacer un return
-        throw new BadRequestException(`Pokemon exist in DB ${ JSON.stringify( err.keyValue ) }`);
-      }
-      
-      console.log(err);
-      // Debe ser otro error
-      throw new InternalServerErrorException(`Can't create Pokemon - Check server logs`);
-
+      this.handleExceptions( err );
     }
 
   }
@@ -85,14 +76,31 @@ export class PokemonService {
     // Mando toda la data, que es mi DTO
     // const updatedPokemon = await pokemon.updateOne( updatePokemonDto, { new: true } ); // esto es para devolver el nuevo objeto
 
-    await pokemon.updateOne( updatePokemonDto );
+    try {
+      await pokemon.updateOne( updatePokemonDto );
+      return { ...pokemon.toJSON(), ...updatePokemonDto };
 
-
-    return { ...pokemon.toJSON(), ...updatePokemonDto };
+    } catch(err) {
+      this.handleExceptions( err );
+    }
 
   }
 
   remove(id: number) {
     return `This action removes a #${id} pokemon`;
   }
+  
+  private handleExceptions( error: any ) {
+
+    // Hubo un registro en la BD que coincide con algún valor enviado
+    if(error.code === 11000) {
+      throw new BadRequestException(`Pokemon exist in DB ${ JSON.stringify( error.keyValue ) }`);
+    }
+      
+    console.log(error);
+    // Debe ser otro error
+    throw new InternalServerErrorException(`Can't create Pokemon - Check server logs`);
+
+  }
+
 }
