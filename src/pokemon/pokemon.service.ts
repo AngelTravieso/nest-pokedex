@@ -95,9 +95,18 @@ export class PokemonService {
     // await pokemon.deleteOne();
 
     // Eliminar de la BD (una sola consulta)
-    const result = this.pokemonModel.findByIdAndDelete( id );
+    // const result = await this.pokemonModel.findByIdAndDelete( id );
 
-    return result;
+    const { deletedCount } = await this.pokemonModel.deleteOne({
+      _id: id // Eliminar pokemon cuyo id sea igual al que recibo como argumento
+    });
+
+    // Si deletedCount es 0, significa que no borro nada
+    if( deletedCount === 0 ) {
+      throw new BadRequestException(`Pokemon with id '${ id }' not found`);
+    }
+
+    return;
 
   }
   
