@@ -72,8 +72,24 @@ export class PokemonService {
     return pokemon;
   }
 
-  update(id: number, updatePokemonDto: UpdatePokemonDto) {
-    return `This action updates a #${id} pokemon`;
+  async update( term : string, updatePokemonDto: UpdatePokemonDto ) {
+    
+    // pokemon es un objeto de mongoose
+    const pokemon = await this.findOne( term );
+
+    if( updatePokemonDto.name ) {
+        // Si viene el nombre, lo convierto en minúsculas
+        updatePokemonDto.name = updatePokemonDto.name.toLocaleLowerCase();
+    }
+
+    // Mando toda la data, que es mi DTO
+    // const updatedPokemon = await pokemon.updateOne( updatePokemonDto, { new: true } ); // esto es para devolver el nuevo objeto
+
+    await pokemon.updateOne( updatePokemonDto );
+
+
+    return { ...pokemon.toJSON(), ...updatePokemonDto };
+
   }
 
   remove(id: number) {
