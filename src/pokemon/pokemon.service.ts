@@ -57,7 +57,7 @@ export class PokemonService {
     }
 
     if( !pokemon ) {
-      throw new NotFoundException(`Pokemon with id, name or no '${ term}' not found`);
+      throw new NotFoundException(`Pokemon with id, name or no '${ term }' not found`);
     }
 
     return pokemon;
